@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Inicio</title>
+<link rel="stylesheet" href="../Estilos/styles.css">
+</head>
+<body>
+
+<div class="sidebar">
+    
+    <div>
+        <img class= "logo"src="../Img/logo.png" alt="">
+    </div>
+
+    <div class="menu">
+        <a href="dashboard.html">INICIO</a>
+        <a href="index.html">REGISTROS</a>
+        <a href="login.html" onclick="logout()">CERRAR SESIÓN</a>
+    </div>
+</div>
+
+<div class="main">
+    <div class="card">
+
+        <div class="header">
+            <h2>RESUMEN GENERAL</h2>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="resumen"></tbody>
+        </table>
+
+    </div>
+</div>
+
+<script src="../Drivers/config.js"></script>
+<script src="../Drivers/app.js"></script>
+
+<script>
+// AGRUPAR Y CONTAR
+const resumen = document.getElementById("resumen");
+
+let registros = JSON.parse(localStorage.getItem(config.tipo)) || [];
+
+let conteo = {};
+
+// AGRUPAR POR NOMBRE
+registros.forEach(item => {
+    let nombre = item.nombre || "Sin nombre";
+
+    if(!conteo[nombre]){
+        conteo[nombre] = 0;
+    }
+
+    // si existe cantidad la suma, si no cuenta 1
+    conteo[nombre] += item.cantidad ? parseInt(item.cantidad) : 1;
+});
+
+// MOSTRAR
+for(let nombre in conteo){
+    let tr = document.createElement("tr");
+
+    tr.innerHTML = `
+        <td>${nombre}</td>
+        <td>${conteo[nombre]}</td>
+    `;
+
+    resumen.appendChild(tr);
+}
+</script>
+
+</body>
+</html>

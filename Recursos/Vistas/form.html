@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<script>
+if (!localStorage.getItem("session")) {
+    window.location.href = "login.html";
+}
+</script>
+
+<head>
+<meta charset="UTF-8">
+<title>Nuevo Registro</title>
+<link rel="stylesheet" href="../Estilos/styles.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+    <div>
+        <img class="logo" src="../Img/logo.png" alt="">
+    </div>
+
+    <div class="menu">
+        <a href="dashboard.html">INICIO</a>
+        <a href="index.html">REGISTROS</a>
+        <a href="login.html" onclick="logout()">CERRAR SESIÓN</a>
+    </div>
+</div>
+
+<div class="main">
+    <div class="card">
+
+        <div class="header">
+            <h2>Nuevo Registro</h2>
+        </div>
+
+        <form id="form" class="form-grid"></form>
+
+        <br>
+        <button type="button" class="btn-success" onclick="guardar()">GUARDAR</button>
+
+    </div>
+</div>
+
+<script src="../Drivers/config.js"></script>
+<script src="../Drivers/app.js"></script>
+
+<script>
+const form = document.getElementById("form");
+
+// 📦 registros existentes
+let registros = JSON.parse(localStorage.getItem(config.tipo)) || [];
+
+// 🧱 crear inputs dinámicos
+config.campos.forEach(campo => {
+
+    let div = document.createElement("div");
+
+    let label = document.createElement("label");
+    label.innerText = campo.label;
+
+    let input = document.createElement("input");
+    input.name = campo.name;
+    input.placeholder = campo.label;
+
+    div.appendChild(label);
+    div.appendChild(input);
+
+    form.appendChild(div);
+});
+
+// 💾 GUARDAR NUEVO
+function guardar() {
+
+    let nuevo = {};
+    let valido = true;
+
+    config.campos.forEach(campo => {
+
+        let input = document.querySelector(`[name="${campo.name}"]`);
+        let valor = input.value.trim();
+
+        if (!valor) {
+            input.style.border = "1px solid red";
+            valido = false;
+        } else {
+            input.style.border = "";
+        }
+
+        nuevo[campo.name] = valor;
+    });
+
+    if (!valido) {
+        alert("Completa todos los campos");
+        return;
+    }
+
+    // 🆔 ID ÚNICO (IMPORTANTE)
+    nuevo.id = Date.now();
+
+    registros.push(nuevo);
+
+    localStorage.setItem(config.tipo, JSON.stringify(registros));
+
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
